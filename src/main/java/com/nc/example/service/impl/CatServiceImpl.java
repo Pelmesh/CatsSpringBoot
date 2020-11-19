@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CatServiceImpl implements CatService {
@@ -15,8 +16,8 @@ public class CatServiceImpl implements CatService {
     CatRepository catRepo;
 
     @Override
-    public Cat findById(Long id) {
-        return catRepo.getOne(id);
+    public Optional<Cat> findById(Long id) {
+        return catRepo.findById(id);
     }
 
     @Override
@@ -27,5 +28,20 @@ public class CatServiceImpl implements CatService {
     @Override
     public List<Cat> findAll() {
         return catRepo.findAll();
+    }
+
+    @Override
+    public List<Cat> findAllByGender(String gender) {
+        return catRepo.findAllByGender(gender);
+    }
+
+    @Override
+    public List<Cat> findChildren(Long fatherId, Long motherId) {
+        return catRepo.findAllByCatFatherIdOrCatMotherId(fatherId, motherId);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        catRepo.deleteById(id);
     }
 }

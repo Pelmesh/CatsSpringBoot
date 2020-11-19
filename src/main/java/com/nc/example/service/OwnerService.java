@@ -12,4 +12,6 @@ public interface OwnerService {
 
     List<Owner> findAll();
 
+    Owner findByName(String name);
+
 }

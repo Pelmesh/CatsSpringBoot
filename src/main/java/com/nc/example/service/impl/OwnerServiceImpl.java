@@ -10,6 +10,7 @@ import java.util.List;
 
 @Service
 public class OwnerServiceImpl implements OwnerService {
+
     @Autowired
     OwnerRepository ownerRepository;
 
@@ -26,5 +27,10 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public List<Owner> findAll() {
         return ownerRepository.findAll();
+    }
+
+    @Override
+    public Owner findByName(String name) {
+        return ownerRepository.findByUsername(name);
     }
 }
