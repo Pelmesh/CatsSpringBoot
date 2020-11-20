@@ -12,7 +12,7 @@
         </#if>
         <form action="" method="post" accept-charset="UTF-8">
             <label>
-                <#if cat??>
+                <#if cat?? && cat.id??>
                     Id: ${cat.id}
                 <#else>
                     Create cat
@@ -20,10 +20,15 @@
             </label>
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" class="form-control" value="<#if cat??>${cat.name!}</#if>"
-                       required
-                       pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$"
+                <input type="text" id="name" class="form-control  ${(nameError??)?string('is-invalid', '')}" value="<#if cat??>${cat.name!}</#if>"
+<#--                       required-->
+<#--                       pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$"-->
                        name="name">
+                <#if nameError??>
+                    <div class="invalid-feedback">
+                        ${nameError}
+                    </div>
+                </#if>
             </div>
             <div class="form-group">
                 <label for="catFather">Father</label>
@@ -33,7 +38,7 @@
                         <#list fatherList as catF>
                             <#if cat?? && cat.catFather?? && cat.catFather.id == catF.id>
                                 <option selected value="${catF.id}">${catF.name}(id:${catF.id})</option>
-                            <#elseif cat??>
+                            <#elseif cat?? && cat.id??>
                                 <#if cat.id != catF.id>
                                     <option value="${catF.id}">${catF.name}(id:${catF.id})</option>
                                 </#if>
@@ -52,7 +57,7 @@
                         <#list motherList as catM>
                             <#if cat?? && cat.catMother?? && cat.catMother.id == catM.id>
                                 <option selected value="${catM.id}">${catM.name}(id:${catM.id})</option>
-                            <#elseif cat??>
+                            <#elseif cat?? && cat.id??>
                                 <#if cat.id != catM.id>
                                     <option value="${catM.id}">${catM.name}(id:${catM.id})</option>
                                 </#if>
@@ -65,8 +70,7 @@
             </div>
             <div class="form-group">
                 <label for="gender">Gender</label>
-                <label>
-                    <select id="gender" name="gender" class="form-control">
+                    <select id="gender" name="gender" class="form-control ${(genderError??)?string('is-invalid', '')}">
                         <#if cat??>
                             <#if cat.gender == 'M'>
                                 <option selected value="M">Male</option>
@@ -87,7 +91,11 @@
                             <option selected value="">No gender</option>
                         </#if>
                     </select>
-                </label>
+                    <#if genderError??>
+                        <div class="invalid-feedback">
+                            ${genderError}
+                        </div>
+                    </#if>
             </div>
             <div class="form-group">
                 <label for="owner">Owner</label>
@@ -106,16 +114,26 @@
             </div>
             <div class="form-group">
                 <label for="color">Color</label>
-                <input type="text" id="color" class="form-control" value="<#if cat??>${cat.color!}</#if>"
-                       pattern="^[А-ЯА-яA-Za-z]{1,15}$"
+                <input type="text" id="color" class="form-control ${(colorError??)?string('is-invalid', '')}" value="<#if cat??>${cat.color!}</#if>"
+<#--                       pattern="^[А-ЯА-яA-Za-z]{1,15}$"-->
                        name="color">
+                <#if colorError??>
+                    <div class="invalid-feedback">
+                        ${colorError}
+                    </div>
+                </#if>
             </div>
             <div class="form-group">
                 <label for="age">Age</label>
-                <input type="number" id="age" class="form-control" value="<#if cat??>${cat.age!}"</#if> name="age"
-                       min="-1" max="25">
+                <input type="number" id="age" class="form-control ${(ageError??)?string('is-invalid', '')}" value="<#if cat??>${cat.age!}"</#if> name="age"
+                       <#--min="-1" max="25"-->>
+                <#if ageError??>
+                    <div class="invalid-feedback">
+                        ${ageError}
+                    </div>
+                </#if>
             </div>
-            <#if cat??>
+            <#if cat?? && cat.id??>
                 <input type="hidden" name="_method" value="PUT"/>
             </#if>
             <button type="submit" class="btn btn-success">Save</button>

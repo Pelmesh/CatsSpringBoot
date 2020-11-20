@@ -6,6 +6,8 @@ import com.nc.example.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -34,15 +40,20 @@ public class CatController {
 
     @GetMapping("/cat/create")
     public String getCreate(Model model) {
-        model.addAttribute("ownerList", ownerService.findAll());
-        model.addAttribute("fatherList", catService.findAllByGender("M"));
-        model.addAttribute("motherList", catService.findAllByGender("F"));
+        setModel(model);
         return "cat/catCreate";
     }
 
     @PostMapping("/cat/create")
-    public String createCat(Cat cat, Model model) {
-        catService.create(cat);
+    public String createCat(@Valid Cat cat, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = getErrors(bindingResult);
+            model.mergeAttributes(errorsMap);
+            model.addAttribute("cat", cat);
+            setModel(model);
+            return "cat/catCreate";
+        }
+        //catService.create(cat);
         model.addAttribute("message", "Cat created");
         return "success";
     }
@@ -78,18 +89,37 @@ public class CatController {
 
     @GetMapping("/cat/create/{id}")
     public String getCatForCreate(@PathVariable Long id, Model model) {
-        model.addAttribute("ownerList", ownerService.findAll());
-        model.addAttribute("fatherList", catService.findAllByGender("M"));
-        model.addAttribute("motherList", catService.findAllByGender("F"));
-        model.addAttribute("cat", catService.findById(id));
+        setModel(model);
+        model.addAttribute("cat", catService.findById(id).get());
         return "cat/catCreate";
     }
 
     @PutMapping("/cat/create/{id}")
-    public String updateCat(Cat cat, Model model) {
+    public String updateCat(@Valid Cat cat, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = getErrors(bindingResult);
+            model.mergeAttributes(errorsMap);
+            model.addAttribute("cat", cat);
+            setModel(model);
+            return "cat/catCreate";
+        }
         catService.create(cat);
         model.addAttribute("message", "Cat changed");
         return "success";
+    }
+
+    private Map<String, String> getErrors(BindingResult bindingResult) {
+        Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
+                fieldError -> fieldError.getField() + "Error",
+                FieldError::getDefaultMessage
+        );
+        return bindingResult.getFieldErrors().stream().collect(collector);
+    }
+
+    private void setModel(Model model) {
+        model.addAttribute("ownerList", ownerService.findAll());
+        model.addAttribute("fatherList", catService.findAllByGender("M"));
+        model.addAttribute("motherList", catService.findAllByGender("F"));
     }
 
 }

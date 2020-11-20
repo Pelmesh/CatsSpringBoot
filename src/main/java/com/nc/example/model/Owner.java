@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -18,6 +20,9 @@ public class Owner{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Pattern(regexp = "^[А-ЯА-яA-Za-z0-9]+$", message = "Example name: User, User20")
+    @Size(min = 1, message = "Short name, min 1")
+    @Size(max = 15, message = "Long name, max 15")
     @Column(name = "username")
     private String username;
 

@@ -7,8 +7,17 @@
     <div class="container mt-5">
         <div class="row justify-content-center align-items-center">
             <form class="text-center border border-light p-5 col-4" action="" method="post">
-                <input type="text" class="form-control mb-4" placeholder="Username" name="username" required
-                       pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$">
+                <input type="text" class="form-control mb-4 ${(usernameError??)?string('is-invalid', '')}"
+                       <#if owner?? && owner.username??>
+                           value="${owner.username!}"
+                       </#if>
+                       placeholder="Username" name="username" required
+                      <#-- pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$"-->>
+                <#if usernameError??>
+                    <div class="invalid-feedback">
+                        ${usernameError}
+                    </div>
+                </#if>
                 <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">
                     Save
                 </button>
