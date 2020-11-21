@@ -3,9 +3,8 @@
 
 <@c.page>
     <@h.page/>
-
-    <div class="container col-3 mt-3">
-        <#if messages??>
+    <div class="container col-4  mt-3">
+        <#if message??>
             <div class="alert alert-danger" role="alert">
                 ${message}
             </div>
@@ -21,14 +20,9 @@
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" class="form-control  ${(nameError??)?string('is-invalid', '')}" value="<#if cat??>${cat.name!}</#if>"
-<#--                       required-->
-<#--                       pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$"-->
+                       pattern="^[А-ЯА-яA-Za-z0-9]{1,15}$"
                        name="name">
-                <#if nameError??>
-                    <div class="invalid-feedback">
-                        ${nameError}
-                    </div>
-                </#if>
+                <span class=" invalid-feedback" id="form__error">Example name: Boris, Kitty20</span>
             </div>
             <div class="form-group">
                 <label for="catFather">Father</label>
@@ -48,8 +42,6 @@
                         </#list>
                     </select>
                 </label>
-            </div>
-            <div class="form-group">
                 <label for="catMother">Mother</label>
                 <label>
                     <select id="catMother" name="catMother" class="form-control">
@@ -115,23 +107,16 @@
             <div class="form-group">
                 <label for="color">Color</label>
                 <input type="text" id="color" class="form-control ${(colorError??)?string('is-invalid', '')}" value="<#if cat??>${cat.color!}</#if>"
-<#--                       pattern="^[А-ЯА-яA-Za-z]{1,15}$"-->
+                       pattern="^[А-ЯА-яA-Za-z]{1,15}$"
                        name="color">
-                <#if colorError??>
-                    <div class="invalid-feedback">
-                        ${colorError}
-                    </div>
-                </#if>
+                <span class=" invalid-feedback" id="form__error">Example color: Black, white</span>
             </div>
             <div class="form-group">
                 <label for="age">Age</label>
                 <input type="number" id="age" class="form-control ${(ageError??)?string('is-invalid', '')}" value="<#if cat??>${cat.age!}"</#if> name="age"
-                       <#--min="-1" max="25"-->>
-                <#if ageError??>
-                    <div class="invalid-feedback">
-                        ${ageError}
-                    </div>
-                </#if>
+                       min="0" max="25"
+                       pattern="^([0-9]|1[0-9]|2[0-5])$">
+                <span class=" invalid-feedback" id="form__error">Age from 0 to 25</span>
             </div>
             <#if cat?? && cat.id??>
                 <input type="hidden" name="_method" value="PUT"/>

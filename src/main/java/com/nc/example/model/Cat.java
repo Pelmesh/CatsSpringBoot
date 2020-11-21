@@ -34,7 +34,6 @@ public class Cat {
     @Column(name = "color")
     private String color;
 
-    @Digits(integer = 2, fraction = 0, message = "Maximum 2 numbers")
     @Max(value = 25, message = "Max 25")
     @Min(value = 0, message = "Min 0")
     @Column(name = "age")

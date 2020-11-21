@@ -46,14 +46,10 @@ public class CatController {
 
     @PostMapping("/cat/create")
     public String createCat(@Valid Cat cat, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorsMap = getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            model.addAttribute("cat", cat);
-            setModel(model);
+        if (!checkErrors(cat, bindingResult, model)) {
             return "cat/catCreate";
         }
-        //catService.create(cat);
+        catService.create(cat);
         model.addAttribute("message", "Cat created");
         return "success";
     }
@@ -96,11 +92,7 @@ public class CatController {
 
     @PutMapping("/cat/create/{id}")
     public String updateCat(@Valid Cat cat, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorsMap = getErrors(bindingResult);
-            model.mergeAttributes(errorsMap);
-            model.addAttribute("cat", cat);
-            setModel(model);
+        if (!checkErrors(cat, bindingResult, model)) {
             return "cat/catCreate";
         }
         catService.create(cat);
@@ -120,6 +112,38 @@ public class CatController {
         model.addAttribute("ownerList", ownerService.findAll());
         model.addAttribute("fatherList", catService.findAllByGender("M"));
         model.addAttribute("motherList", catService.findAllByGender("F"));
+    }
+
+    private boolean checkErrors(Cat cat, BindingResult bindingResult, Model model) {
+        model.addAttribute("cat", cat);
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = getErrors(bindingResult);
+            model.mergeAttributes(errorsMap);
+            setModel(model);
+            return false;
+        }
+        if (!checkParent(cat)) {
+            model.addAttribute("message", "Check parent");
+            setModel(model);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkParent(Cat cat) {
+        if (cat.getCatFather() != null) {
+            Cat catF = catService.findById(cat.getCatFather().getId()).get();
+            if (catF == null || !catF.getGender().equals('M')) {
+                return false;
+            }
+        }
+        if (cat.getCatMother() != null) {
+            Cat catM = catService.findById(cat.getCatFather().getId()).get();
+            if (catM == null || !catM.getGender().equals('F')) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
