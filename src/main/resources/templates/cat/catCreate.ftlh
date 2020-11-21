@@ -63,7 +63,7 @@
             <div class="form-group">
                 <label for="gender">Gender</label>
                     <select id="gender" name="gender" class="form-control ${(genderError??)?string('is-invalid', '')}">
-                        <#if cat??>
+                        <#if cat?? && cat.gender??>
                             <#if cat.gender == 'M'>
                                 <option selected value="M">Male</option>
                                 <option value="F">Female</option>

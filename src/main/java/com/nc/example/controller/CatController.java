@@ -132,14 +132,12 @@ public class CatController {
 
     private boolean checkParent(Cat cat) {
         if (cat.getCatFather() != null) {
-            Cat catF = catService.findById(cat.getCatFather().getId()).get();
-            if (catF == null || !catF.getGender().equals('M')) {
+            if (!cat.getCatFather().getGender().equals("M")) {
                 return false;
             }
         }
         if (cat.getCatMother() != null) {
-            Cat catM = catService.findById(cat.getCatFather().getId()).get();
-            if (catM == null || !catM.getGender().equals('F')) {
+            if (cat.getCatMother().getGender().equals("F")) {
                 return false;
             }
         }
