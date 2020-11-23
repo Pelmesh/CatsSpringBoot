@@ -43,7 +43,9 @@
                     <td>${cat.gender!}</td>
                     <td>${cat.color!}</td>
                     <td>${cat.age!}</td>
-                    <td><a href="/cat/create/${cat.id}" class="btn btn-secondary">Edit</a></td>
+                    <#if userAuth??>
+                        <td><a href="/cat/create/${cat.id}" class="btn btn-secondary">Edit</a></td>
+                    </#if>
                     <td><a href="/cat/${cat.id}" class="btn btn-secondary">Info</a></td>
                 </tr>
             </#list>

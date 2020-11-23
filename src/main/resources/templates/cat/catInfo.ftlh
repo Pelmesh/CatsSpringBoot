@@ -36,10 +36,12 @@
                 <li class="list-group-item">Gender: ${cat.gender!}</li>
                 <li class="list-group-item">Color: ${cat.color!}</li>
                 <li class="list-group-item">Age: ${cat.age!}</li>
-                <form method="post"  action="" class="text-center mt-3">
-                    <input type="hidden" name="_method" value="DELETE"/>
-                    <button type="submit" class="btn btn-success">Delete</button>
-                </form>
+                <#if userAuth??>
+                    <form method="post"  action="" class="text-center mt-3">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button type="submit" class="btn btn-success">Delete</button>
+                    </form>
+                </#if>
             </ul>
         </div>
     <#else>

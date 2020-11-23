@@ -1,9 +1,13 @@
 package com.nc.example.controller;
 
 import com.nc.example.model.Cat;
+import com.nc.example.model.Owner;
 import com.nc.example.service.CatService;
 import com.nc.example.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,10 +31,10 @@ import java.util.stream.Collectors;
 public class CatController {
 
     @Autowired
-    CatService catService;
+    private CatService catService;
 
     @Autowired
-    OwnerService ownerService;
+    private OwnerService ownerService;
 
     @GetMapping
     public String getAll(Model model) {
@@ -60,8 +64,9 @@ public class CatController {
         if (cat.isPresent()) {
             model.addAttribute("cat", cat.get());
             model.addAttribute("children", catService.findChildren(id, id));
+            return "cat/catInfo";
         }
-        return "cat/catInfo";
+        return "404";
     }
 
     @DeleteMapping("/cat/{id}")
@@ -86,8 +91,12 @@ public class CatController {
     @GetMapping("/cat/create/{id}")
     public String getCatForCreate(@PathVariable Long id, Model model) {
         setModel(model);
-        model.addAttribute("cat", catService.findById(id).get());
-        return "cat/catCreate";
+        Optional<Cat> cat = catService.findById(id);
+        if (cat.isPresent()) {
+            model.addAttribute("cat", cat.get());
+            return "cat/catCreate";
+        }
+        return "404";
     }
 
     @PutMapping("/cat/create/{id}")
@@ -137,7 +146,7 @@ public class CatController {
             }
         }
         if (cat.getCatMother() != null) {
-            if (cat.getCatMother().getGender().equals("F")) {
+            if (!cat.getCatMother().getGender().equals("F")) {
                 return false;
             }
         }
