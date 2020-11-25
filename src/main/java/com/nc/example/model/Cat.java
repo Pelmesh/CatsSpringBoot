@@ -1,7 +1,10 @@
 package com.nc.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +32,7 @@ public class Cat {
     @Column(name = "name")
     private String name;
 
-    @Pattern(regexp = "^(^[А-ЯА-яA-Za-z]+$)|(^$)", message = "Example color: Black, White")
+    @Pattern(regexp = "^[А-Яа-яA-Za-z]*$", message = "Example color: Black, White")
     @Size(max = 15, message = "Long color, max 15")
     @Column(name = "color")
     private String color;
@@ -43,16 +46,17 @@ public class Cat {
     @Column(name = "gender")
     private String gender;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "father_id")
     private Cat catFather;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mother_id")
     private Cat catMother;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties("owner")
     private Owner owner;
 
     public Cat() {

@@ -3,7 +3,10 @@ package com.nc.example.controller;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +16,7 @@ public class MyErrorController implements ErrorController {
 
     @Override
     public String getErrorPath() {
-        return "/error";
+        return "/500";
     }
 
     @RequestMapping("/error")
@@ -29,6 +32,6 @@ public class MyErrorController implements ErrorController {
                 return "500";
             }
         }
-        return "error";
+        return "500";
     }
 }

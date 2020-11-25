@@ -4,6 +4,8 @@ import com.nc.example.model.Cat;
 import com.nc.example.repo.CatRepository;
 import com.nc.example.service.CatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,11 @@ public class CatServiceImpl implements CatService {
     @Override
     public List<Cat> findAll() {
         return catRepo.findAll();
+    }
+
+    @Override
+    public Page<Cat> findAll(Pageable pageable) {
+        return catRepo.findAll(pageable);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.nc.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,6 +38,7 @@ public class Owner implements UserDetails {
     @Column(name = "username")
     private String username;
 
+    @JsonIgnore
     @NotBlank(message = "Password incorrect")
     @Size(min = 4, message = "Short password, min 4")
     @Column(name = "password")
@@ -47,6 +50,7 @@ public class Owner implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner")
+    @JsonIgnoreProperties("owner")
     private Set<Cat> cats;
 
     public Long getId() {

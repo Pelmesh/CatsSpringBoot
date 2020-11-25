@@ -1,13 +1,10 @@
 package com.nc.example.controller;
 
 import com.nc.example.model.Cat;
-import com.nc.example.model.Owner;
 import com.nc.example.service.CatService;
 import com.nc.example.service.OwnerService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +26,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/")
 public class CatController {
+
+    private static final Logger LOGGER = Logger.getLogger(CatController.class);
 
     @Autowired
     private CatService catService;
@@ -54,6 +53,7 @@ public class CatController {
             return "cat/catCreate";
         }
         catService.create(cat);
+        LOGGER.info("Cat created id:" + cat.getId());
         model.addAttribute("message", "Cat created");
         return "success";
     }
@@ -83,6 +83,7 @@ public class CatController {
                 catService.create(value);
             }
         }
+        LOGGER.info("Cat deleted id:" + id);
         catService.deleteById(id);
         model.addAttribute("message", "Cat removed");
         return "success";
@@ -105,6 +106,7 @@ public class CatController {
             return "cat/catCreate";
         }
         catService.create(cat);
+        LOGGER.info("Cat updated id:" + cat.getId());
         model.addAttribute("message", "Cat changed");
         return "success";
     }

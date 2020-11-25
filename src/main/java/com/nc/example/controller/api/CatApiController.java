@@ -3,6 +3,9 @@ package com.nc.example.controller.api;
 import com.nc.example.model.Cat;
 import com.nc.example.service.CatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +28,8 @@ public class CatApiController {
     CatService catService;
 
     @GetMapping
-    public List<Cat> getAll() {
-        return catService.findAll();
+    public Object getAll(@PageableDefault(sort = {"id"}, size = 20, direction = Sort.Direction.ASC) Pageable pageable) {
+        return catService.findAll(pageable).getContent();
     }
 
     @GetMapping("/{id}")
@@ -36,10 +39,17 @@ public class CatApiController {
         return HttpStatus.NOT_FOUND;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public Object createCat(@RequestBody Cat cat) {
         if (cat.getId() != null || !checkParent(cat)) return HttpStatus.BAD_REQUEST;
-        return catService.create(cat);
+        catService.create(cat);
+        if (cat.getCatMother() != null) {
+            cat.setCatMother(catService.findById(cat.getCatMother().getId()).get());
+        }
+        if (cat.getCatFather() != null) {
+            cat.setCatFather(catService.findById(cat.getCatFather().getId()).get());
+        }
+        return cat;
     }
 
     private boolean checkParent(Cat cat) {
@@ -66,7 +76,7 @@ public class CatApiController {
         return true;
     }
 
-    @PutMapping("/create")
+    @PutMapping
     public Object updateCat(@RequestBody Cat cat) {
         if (cat.getId() == null) return HttpStatus.BAD_REQUEST;
         Optional<Cat> catO = catService.findById(cat.getId());
@@ -77,7 +87,7 @@ public class CatApiController {
     @DeleteMapping("/{id}")
     public Object deleteCat(@PathVariable Long id) {
         Optional<Cat> cat = catService.findById(id);
-        if (!cat.isPresent()) return HttpStatus.BAD_REQUEST;
+        if (!cat.isPresent()) return HttpStatus.NOT_FOUND;
         List<Cat> catL = catService.findChildren(id, id);
         if (catL != null) {
             for (Cat value : catL) {
